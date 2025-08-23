@@ -8,7 +8,7 @@ import re
 # -------------------- Configure Gemini --------------------
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]  # 🔑 Store API key in Streamlit secrets
 genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = genai.GenerativeModel("gemini-2.5-flash")
 
 # -------------------- AI Processing --------------------
 def extract_insights_ai(review_text: str) -> dict:
