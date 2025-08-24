@@ -81,12 +81,15 @@ if st.session_state.reviews:
     # Download as CSV
     csv = df.to_csv(index=False).encode("utf-8")
     st.download_button("⬇️ Download Reviews as CSV", csv, "reviews.csv", "text/csv")
-    st.subheader("📊 Visualization of Insights")
 
-    # Count Positive & Negative mentions
-    pos_count = df["positive"].str.count(r"\w+").sum()
-    neg_count = df["negative"].str.count(r"\w+").sum()
+# ----------------- Visualization -----------------
+st.subheader("📊 Visualization of Insights")
 
+# Safely count Positive & Negative mentions
+pos_count = df["positive"].fillna("").apply(lambda x: len(x.split()) if isinstance(x, str) else 0).sum()
+neg_count = df["negative"].fillna("").apply(lambda x: len(x.split()) if isinstance(x, str) else 0).sum()
+
+if pos_count + neg_count > 0:
     col1, col2 = st.columns(2)
 
     # Bar Chart
@@ -103,3 +106,5 @@ if st.session_state.reviews:
         fig2, ax2 = plt.subplots()
         ax2.pie([pos_count, neg_count], labels=["Positive", "Negative"], autopct="%1.1f%%", colors=["green", "red"])
         st.pyplot(fig2)
+else:
+    st.info("No positive/negative insights to visualize yet. Try adding more reviews!")
