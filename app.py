@@ -11,6 +11,17 @@ GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
+# ---------- Preprocessing Cleaning ----------
+def clean_review_text(text: str) -> str:
+    """Cleans input review text for AI processing"""
+    text = str(text)
+    text = re.sub(r'<.*?>', ' ', text)  # Remove HTML tags
+    text = re.sub(r'http\S+|www\S+', ' ', text)  # Remove URLs
+    text = text.encode('ascii', 'ignore').decode('ascii')  # Remove emojis/non-ascii
+    text = text.translate(str.maketrans('', '', string.punctuation))  # Remove punctuation
+    text = re.sub(r'\s+', ' ', text).strip()  # Normalize spaces
+    return text
+
 # -------------------- AI Processing --------------------
 def extract_insights_ai(review_text: str) -> dict:
     prompt = f"""
@@ -44,6 +55,7 @@ if "reviews" not in st.session_state:
     st.session_state.reviews = []
 
 def add_review(review_text, rating=5):
+    review_text = clean_review_text(review_text)
     insights = extract_insights_ai(review_text)
     new_review = {
         "review_id": f"R{len(st.session_state.reviews)+1:05d}",
