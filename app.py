@@ -60,8 +60,7 @@ def add_review(review_text, rating=5):
 
 # -------------------- Streamlit UI --------------------
 st.set_page_config(page_title="Customer Review Insights", layout="wide")
-st.title("AI-Powered
-Customer Review Insights")
+st.title("AI-Powered Customer Review Insights")
 
 with st.form("review_form"):
     review_text = st.text_area("✍️ Enter customer review", height=120)
