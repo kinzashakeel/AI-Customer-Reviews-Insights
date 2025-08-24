@@ -3,9 +3,10 @@ import pandas as pd
 import google.generativeai as genai
 from datetime import datetime
 import json
+import matplotlib.pyplot as plt
 import re
 
-# -------------------- Configure Gemini --------------------
+# -------------------- Gemini API --------------------
 GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]  # 🔑 Store API key in Streamlit secrets
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
@@ -80,3 +81,26 @@ if st.session_state.reviews:
     # Download as CSV
     csv = df.to_csv(index=False).encode("utf-8")
     st.download_button("⬇️ Download Reviews as CSV", csv, "reviews.csv", "text/csv")
+
+ st.subheader("📊 Visualization of Insights")
+
+    # Count Positive & Negative mentions
+    pos_count = df["positive"].str.count(r"\w+").sum()
+    neg_count = df["negative"].str.count(r"\w+").sum()
+
+    col1, col2 = st.columns(2)
+
+    # Bar Chart
+    with col1:
+        st.markdown("### 🔎 Positive vs Negative (Bar Chart)")
+        fig, ax = plt.subplots()
+        ax.bar(["Positive", "Negative"], [pos_count, neg_count], color=["green", "red"])
+        ax.set_ylabel("Mentions")
+        st.pyplot(fig)
+
+    # Pie Chart
+    with col2:
+        st.markdown("### 🥧 Sentiment Distribution (Pie Chart)")
+        fig2, ax2 = plt.subplots()
+        ax2.pie([pos_count, neg_count], labels=["Positive", "Negative"], autopct="%1.1f%%", colors=["green", "red"])
+        st.pyplot(fig2)
