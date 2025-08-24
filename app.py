@@ -81,8 +81,7 @@ if st.session_state.reviews:
     # Download as CSV
     csv = df.to_csv(index=False).encode("utf-8")
     st.download_button("⬇️ Download Reviews as CSV", csv, "reviews.csv", "text/csv")
-
- st.subheader("📊 Visualization of Insights")
+    st.subheader("📊 Visualization of Insights")
 
     # Count Positive & Negative mentions
     pos_count = df["positive"].str.count(r"\w+").sum()
