@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import re
 
 # -------------------- Gemini API --------------------
-GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]  # 🔑 Store API key in Streamlit secrets
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"] 
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
@@ -60,7 +60,8 @@ def add_review(review_text, rating=5):
 
 # -------------------- Streamlit UI --------------------
 st.set_page_config(page_title="Customer Review Insights", layout="wide")
-st.title("📊 Customer Review Insights with Gemini")
+st.title("AI-Powered
+Customer Review Insights")
 
 with st.form("review_form"):
     review_text = st.text_area("✍️ Enter customer review", height=120)
@@ -85,26 +86,30 @@ if st.session_state.reviews:
 # ----------------- Visualization -----------------
 st.subheader("📊 Visualization of Insights")
 
-# Safely count Positive & Negative mentions
-pos_count = df["positive"].fillna("").apply(lambda x: len(x.split()) if isinstance(x, str) else 0).sum()
-neg_count = df["negative"].fillna("").apply(lambda x: len(x.split()) if isinstance(x, str) else 0).sum()
+if st.button("Show Visualizations"):   # ✅ Only runs when clicked
+    if 'df' in locals() and not df.empty:
+        # Safely count Positive & Negative mentions
+        pos_count = df["positive"].apply(lambda x: len(x) if isinstance(x, list) else 0).sum()
+        neg_count = df["negative"].apply(lambda x: len(x) if isinstance(x, list) else 0).sum()
 
-if pos_count + neg_count > 0:
-    col1, col2 = st.columns(2)
+        if pos_count + neg_count > 0:
+            col1, col2 = st.columns(2)
 
-    # Bar Chart
-    with col1:
-        st.markdown("### 🔎 Positive vs Negative (Bar Chart)")
-        fig, ax = plt.subplots()
-        ax.bar(["Positive", "Negative"], [pos_count, neg_count], color=["green", "red"])
-        ax.set_ylabel("Mentions")
-        st.pyplot(fig)
+            # Bar Chart
+            with col1:
+                st.markdown("### 🔎 Positive vs Negative (Bar Chart)")
+                fig, ax = plt.subplots()
+                ax.bar(["Positive", "Negative"], [pos_count, neg_count], color=["green", "red"])
+                ax.set_ylabel("Mentions")
+                st.pyplot(fig)
 
-    # Pie Chart
-    with col2:
-        st.markdown("### 🥧 Sentiment Distribution (Pie Chart)")
-        fig2, ax2 = plt.subplots()
-        ax2.pie([pos_count, neg_count], labels=["Positive", "Negative"], autopct="%1.1f%%", colors=["green", "red"])
-        st.pyplot(fig2)
-else:
-    st.info("No positive/negative insights to visualize yet. Try adding more reviews!")
+            # Pie Chart
+            with col2:
+                st.markdown("### 🥧 Sentiment Distribution (Pie Chart)")
+                fig2, ax2 = plt.subplots()
+                ax2.pie([pos_count, neg_count], labels=["Positive", "Negative"], autopct="%1.1f%%", colors=["green", "red"])
+                st.pyplot(fig2)
+        else:
+            st.info("No positive/negative insights to visualize yet. Try adding more reviews!")
+    else:
+        st.warning("⚠️ No reviews available yet. Add some reviews first to see visualization.")
