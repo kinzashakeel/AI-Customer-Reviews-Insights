@@ -2,6 +2,7 @@
 
 This project extracts **structured insights** (positives, negatives, problems, solutions) from customer reviews using **Google Gemini AI** and provides an interactive **Streamlit UI** for analysis, visualization, and CSV export.
 
+Live App Link: https://ai-customer-reviews.streamlit.app/
 ---
 
 ## 🚀 Features
